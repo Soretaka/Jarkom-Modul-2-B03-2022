@@ -136,3 +136,6 @@ www             IN      CNAME   wise.B03.com.
 @               IN      AAAA    ::1
 ' > /etc/bind/wise/wise.B03.com
 ```
+
+hasil ping wise.B03.com
+![image](https://user-images.githubusercontent.com/70903245/198836283-b8539688-6b89-466e-9122-a2d853eab1f6.png)
