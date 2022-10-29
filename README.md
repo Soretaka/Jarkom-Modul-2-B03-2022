@@ -140,6 +140,7 @@ www             IN      CNAME   wise.B03.com.
 ```
 
 hasil ping wise.B03.com
+
 ![image](https://user-images.githubusercontent.com/70903245/198836283-b8539688-6b89-466e-9122-a2d853eab1f6.png)
 
 ### 8. Pertama dengan webserver www.wise.yyy.com. Pertama, Loid membutuhkan webserver dengan DocumentRoot pada /var/www/wise.yyy.com
@@ -199,6 +200,7 @@ mv -T wise /var/www/wise.B03.com
 ```
 
 hasil:
+
 ![image](https://user-images.githubusercontent.com/70903245/198836744-944bb85a-2318-4e48-b70b-1655c58cc07e.png)
 
 ### 9. Setelah itu, Loid juga membutuhkan agar url www.wise.yyy.com/index.php/home dapat menjadi menjadi www.wise.yyy.com/home
@@ -215,5 +217,103 @@ RewriteRule ^home$ index.php [NC]
 ```
 
 hasil:
+
 ![image](https://user-images.githubusercontent.com/70903245/198836857-26bbdc09-3377-40d5-a3b0-ffe56fcf6ac1.png)
+
 ![image](https://user-images.githubusercontent.com/70903245/198836744-944bb85a-2318-4e48-b70b-1655c58cc07e.png)
+
+### 10.11.12.13 Setelah itu, pada subdomain www.eden.wise.yyy.com, Loid membutuhkan penyimpanan aset yang memiliki DocumentRoot pada /var/www/eden.wise.yyy.com, Akan tetapi, pada folder /public, Loid ingin hanya dapat melakukan directory listing saja, Tidak hanya itu, Loid juga ingin menyiapkan error file 404.html pada folder /error untuk mengganti error kode pada apache. Loid juga meminta Franky untuk dibuatkan konfigurasi virtual host. Virtual host ini bertujuan untuk dapat mengakses file asset www.eden.wise.yyy.com/public/js menjadi www.eden.wise.yyy.com/js
+
+jalankan perintah berikut di eden:
+
+```
+echo '
+<VirtualHost *:80>
+        <Directory /var/www/eden.wise.B03.com/public>
+        	Options +Indexes
+        </Directory>
+
+        <Directory /var/www/eden.wise.B03.com/public/css/*>
+                Options -Indexes
+        </Directory>
+
+        <Directory /var/www/eden.wise.B03.com/public/js/*>
+                Options -Indexes
+        </Directory>
+
+	<Directory /var/www/eden.wise.B03.com>
+                Options +FollowSymLinks -Multiviews
+                AllowOverride All
+        </Directory>
+
+        #untuk soal 13
+        Alias "/js" "/var/www/eden.wise.B03.com/public/js"
+
+        # The ServerName directive sets the request scheme, hostname and port t$
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the requests Host: header to
+        # match this virtual host. For the default virtual host (this file) this
+        # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/eden.wise.B03.com
+        ServerName eden.wise.B03.com
+        ServerAlias www.eden.wise.B03.com
+
+
+        RewriteEngine on
+        RewriteCond %{HTTP_HOST} ^192\.174\.3\.3
+        RewriteRule (.*) http://www.wise.B03.com/$1 [R=301,L]
+
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+
+' > /etc/apache2/sites-available/eden.wise.B03.com.conf
+
+a2ensite eden.wise.B03.com
+service apache2 reload
+service apache2 restart
+
+mkdir /var/www/eden.wise.B03.com
+wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1q9g6nM85bW5T9f5yoyXtDqonUKKCHOTV' -O /etc/apache2/sites-available/eden.wise.zip
+unzip "/etc/apache2/sites-available/eden.wise.zip"
+mv -T eden.wise /var/www/eden.wise.B03.com
+
+a2enmod rewrite
+service apache2 restart
+
+#untuk soal 12
+echo '
+ErrorDocument 404 /error/404.html
+
+' > /var/www/eden.wise.B03.com/.htaccess
+```
+
+testing:
+
+![image](https://user-images.githubusercontent.com/70903245/198837195-9b1182c7-4ba9-4395-8780-13b3ff0bc4de.png)
+
+![image](https://user-images.githubusercontent.com/70903245/198837258-38065ee9-cf49-4ba5-878a-6ab04cfabcc1.png)
+
+![image](https://user-images.githubusercontent.com/70903245/198837305-f1d1eedd-3419-48c7-b1ba-66a2e7a3ff66.png)
+
+![image](https://user-images.githubusercontent.com/70903245/198837212-80543b34-7590-4acd-92f6-fee84ede0123.png)
