@@ -504,3 +504,26 @@ hasil:
 ![image](https://user-images.githubusercontent.com/70903245/198837951-dd91bb09-7665-47ac-b31b-185f3f2d6653.png)
 
 ![image](https://user-images.githubusercontent.com/70903245/198837986-e6391cc1-d3fe-4869-9503-7145e4d5047e.png)
+
+### 17. Karena website www.eden.wise.yyy.com semakin banyak pengunjung dan banyak modifikasi sehingga banyak gambar-gambar yang random, maka Loid ingin mengubah request gambar yang memiliki substring "eden" akan diarahkan menuju eden.png
+
+Jalankan script dibawah ini pada eden:
+
+```
+echo '
+RewriteEngine On
+RewriteRule ^(.*)eden(.*)\.jpg$ http://www.eden.wise.B03.com/public/images/eden.png [L,R=301]
+ErrorDocument 404 /error/404.html
+' > /var/www/eden.wise.B03.com/.htaccess
+```
+
+```
+ ^(.*)eden(.*)\.jpg$
+```
+
+merupakan regex untuk mendapatkan substring eden dan gambar
+
+hasil:
+![image](https://user-images.githubusercontent.com/70903245/198838203-f8711e01-d833-40eb-90f4-6ef3def22a1e.png)
+
+![image](https://user-images.githubusercontent.com/70903245/198838243-3a297ecd-3ddf-4046-b52c-05f4208d2fde.png)
