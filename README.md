@@ -108,7 +108,7 @@ apt install dnsutils -y
 
 ### 2. Untuk mempermudah mendapatkan informasi mengenai misi dari Handler, bantulah Loid membuat website utama dengan akses wise.yyy.com dengan alias www.wise.yyy.com pada folder wise
 
-Jalankan perintah berikut:
+Jalankan perintah berikut pada Eden:
 
 ```
 echo '
