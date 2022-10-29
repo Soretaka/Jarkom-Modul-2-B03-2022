@@ -8,6 +8,8 @@
 | James Silaban                  | 5025201169 |
 | Anak Agung Yatestha Parwata    | 5025201234 |
 
+Pada praktikum kali ini, Yatestha mengerjakan seluruh soal secara sendiri.
+
 ### 1.WISE akan dijadikan sebagai DNS Master, Berlint akan dijadikan DNS Slave, dan Eden akan digunakan sebagai Web Server. Terdapat 2 Client yaitu SSS, dan Garden. Semua node terhubung pada router Ostania, sehingga dapat mengakses internet.
 
 ![image](https://user-images.githubusercontent.com/70903245/198835785-8c078f21-4b3f-4dc8-a495-b9463819c3c4.png)
