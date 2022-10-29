@@ -200,3 +200,20 @@ mv -T wise /var/www/wise.B03.com
 
 hasil:
 ![image](https://user-images.githubusercontent.com/70903245/198836744-944bb85a-2318-4e48-b70b-1655c58cc07e.png)
+
+### 9. Setelah itu, Loid juga membutuhkan agar url www.wise.yyy.com/index.php/home dapat menjadi menjadi www.wise.yyy.com/home
+
+jalan command berikut di wise:
+
+```
+a2enmod rewrite
+service apache2 restart
+echo '
+RewriteEngine on
+RewriteRule ^home$ index.php [NC]
+' > /var/www/wise.B03.com/.htaccess
+```
+
+hasil:
+![image](https://user-images.githubusercontent.com/70903245/198836857-26bbdc09-3377-40d5-a3b0-ffe56fcf6ac1.png)
+![image](https://user-images.githubusercontent.com/70903245/198836744-944bb85a-2318-4e48-b70b-1655c58cc07e.png)
