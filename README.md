@@ -486,3 +486,21 @@ diminta memasukan username password
 setelah memasukan twilight dan opStrix
 
 ![image](https://user-images.githubusercontent.com/70903245/198837750-8528fef5-517f-4c6b-975d-92908738e8b4.png)
+
+### 16. dan setiap kali mengakses IP Eden akan dialihkan secara otomatis ke www.wise.yyy.com
+
+tambahkan
+
+```
+ RewriteEngine on
+        RewriteCond %{HTTP_HOST} ^192\.174\.3\.3
+        RewriteRule (.*) http://www.wise.B03.com/$1 [R=301,L]
+```
+
+pada /etc/apache2/sites-available/eden.wise.B03.com.conf pada node Eden didalam configurasi virtual hostnya
+
+hasil:
+
+![image](https://user-images.githubusercontent.com/70903245/198837951-dd91bb09-7665-47ac-b31b-185f3f2d6653.png)
+
+![image](https://user-images.githubusercontent.com/70903245/198837986-e6391cc1-d3fe-4869-9503-7145e4d5047e.png)
