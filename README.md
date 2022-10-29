@@ -317,3 +317,170 @@ testing:
 ![image](https://user-images.githubusercontent.com/70903245/198837305-f1d1eedd-3419-48c7-b1ba-66a2e7a3ff66.png)
 
 ![image](https://user-images.githubusercontent.com/70903245/198837212-80543b34-7590-4acd-92f6-fee84ede0123.png)
+
+## 14.15 Loid meminta agar www.strix.operation.wise.yyy.com hanya bisa diakses dengan port 15000 dan port 15500, dengan autentikasi username Twilight dan password opStrix dan file di /var/www/strix.operation.wise.yyy
+
+jalankan perintah berikut di eden:
+
+```
+
+echo '
+<VirtualHost *:15000> #soal 14
+        <Directory /var/www/strix.operation.wise.B03.com>
+                AuthType Basic
+                AuthName "Restricted Content"
+                AuthUserFile /var/www/strix.operation.wise.B03.com/.htpasswd
+                Require valid-user
+        </Directory>
+        # The ServerName directive sets the request scheme, hostname and port t$
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the requests Host: header to
+                # soal no 15
+                AuthType Basic
+                AuthName "Restricted Content"
+                AuthUserFile /var/www/strix.operation.wise.B03.com/.htpasswd
+                Require valid-user
+        </Directory>
+        # The ServerName directive sets the request scheme, hostname and port t$
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the requests Host: header to
+        # match this virtual host. For the default virtual host (this file) this
+        # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/strix.operation.wise.B03.com
+        ServerName strix.operation.wise.B03.com
+        ServerAlias www.strix.operation.wise.B03.com
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+                # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/strix.operation.wise.B03.com
+        ServerName strix.operation.wise.B03.com
+        ServerAlias www.strix.operation.wise.B03.com
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+<VirtualHost *:15000> #soal no 14
+        <Directory /var/www/strix.operation.wise.B03.com>
+                AuthType Basic
+                AuthName "Restricted Content"
+                AuthUserFile /var/www/strix.operation.wise.B03.com/.htpasswd
+                Require valid-user
+        </Directory>
+        # The ServerName directive sets the request scheme, hostname and port t$
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the requests Host: header to
+                # soal no 15
+                AuthType Basic
+                AuthName "Restricted Content"
+                AuthUserFile /var/www/strix.operation.wise.B03.com/.htpasswd
+                Require valid-user
+        </Directory>
+        # The ServerName directive sets the request scheme, hostname and port t$
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the requests Host: header to
+        # match this virtual host. For the default virtual host (this file) this
+        # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/strix.operation.wise.B03.com
+        ServerName strix.operation.wise.B03.com
+        ServerAlias www.strix.operation.wise.B03.com
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+                # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/strix.operation.wise.B03.com
+        ServerName strix.operation.wise.B03.com
+        ServerAlias www.strix.operation.wise.B03.com
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
+' > /etc/apache2/sites-available/strix.operation.wise.B03.com.conf
+
+a2ensite strix.operation.wise.B03.com
+service apache2 reload
+service apache2 restart
+mkdir /var/www/strix.operation.wise.B03.com
+wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1bgd$
+unzip "/etc/apache2/sites-available/wise.zip"
+mv -T strix.operation.wise /var/www/strix.operation.wise.B03.com
+
+#Untuk soal 14
+echo '
+Listen 80
+Listen 15000
+Listen 15500
+' > /etc/apache2/ports.conf
+
+a2enmod rewrite
+service apache2 restart
+
+#untuk soal 15
+htpasswd -c -b /var/www/strix.operation.wise.B03.com/.htpasswd Twilight opStrix
+service apache2 restart
+```
+
+hasil test:
+tanpa port
+
+![image](https://user-images.githubusercontent.com/70903245/198837668-66026840-7b4f-46a3-b223-ace428c2e929.png)
+
+keredirect ke www.eden.B03.com
+
+![image](https://user-images.githubusercontent.com/70903245/198837673-b11b420a-3490-486d-a9f8-d07e7850aba2.png)
+
+dengan port 15000:
+
+![image](https://user-images.githubusercontent.com/70903245/198837733-00282aca-c1ac-44ed-9ee6-7c9e821dee94.png)
+
+diminta memasukan username password
+![image](https://user-images.githubusercontent.com/70903245/198837737-7ded4935-8422-4b60-abc1-8a2f2d200dc0.png)
+
+setelah memasukan twilight dan opStrix
+![image](https://user-images.githubusercontent.com/70903245/198837750-8528fef5-517f-4c6b-975d-92908738e8b4.png)
