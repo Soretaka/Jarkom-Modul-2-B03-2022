@@ -527,3 +527,7 @@ hasil:
 ![image](https://user-images.githubusercontent.com/70903245/198838203-f8711e01-d833-40eb-90f4-6ef3def22a1e.png)
 
 ![image](https://user-images.githubusercontent.com/70903245/198838243-3a297ecd-3ddf-4046-b52c-05f4208d2fde.png)
+
+## Kendala yang dialami
+
+ketika melakukan apt-get install apapun, koneksinya lambat, sekali apt-get install bisa berlangsung kurang lebih 15 menit
