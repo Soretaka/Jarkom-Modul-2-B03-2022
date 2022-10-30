@@ -143,6 +143,229 @@ hasil ping wise.B03.com
 
 ![image](https://user-images.githubusercontent.com/70903245/198836283-b8539688-6b89-466e-9122-a2d853eab1f6.png)
 
+### 5.  Agar dapat tetap dihubungi jika server WISE bermasalah, buatlah juga Berlint sebagai DNS Slave untuk domain utama
+
+Pada *Wise*, edit `zone "wise.yyy.com"` pada `/etc/bind/named.conf.local` dengan command berikut:
+
+```
+echo '
+zone "wise.B03.com" {
+        type master;
+        notify yes;
+        also-notify { 192.174.3.2; };
+        allow-transfer { 192.174.3.2; };
+        file "/etc/bind/wise/wise.B03.com";
+};'
+> /etc/bind/named.conf.local
+```
+Kemudian restart bind9
+
+```
+service bind9 restart
+```
+
+Kemudian buka *Berlint*, lalu update package lists dan instal aplikasi bind9 pada *Berlint*
+
+```
+apt-get update
+apt-get install bind9 -y
+```
+
+Edit file `/etc/bind/named.conf.local` pada *Berlint* dengan command berikut:
+
+```
+echo '
+zone "wise.B03.com" {
+        type slave;
+        masters { 192.174.2.2; };
+        file "var/lib/bind/wise.B03.com";
+};
+
+' > /etc/bind/named.conf.local
+```
+
+Lakukan restart bind9 pada *Berlint*
+
+```
+service bind9 restart
+```
+
+Untuk testing, matikan service bind9 pada *Wise*
+
+```
+service bind9 stop
+```
+
+Pada client *SSS*, masukkan nameserver mengarah ke IP *Wise* dan *Berlint* dengan command:
+
+```
+echo '
+nameserver 192.174.2.2 #IP server Wise
+nameserver 192.174.3.2 #IP server Berlint
+' > /etc/resolv.conf
+```
+
+kemudian periksa dengan ping www.wise.yyy.com pada client *SSS*
+
+![image](https://user-images.githubusercontent.com/78299006/198867497-8b0e9e06-dd7b-4b93-b85d-72fae36390fc.png)
+
+Jika berhasil melakukan ping ke www.wise.yyy.com, maka DNS Slave berhasil dibuat
+
+
+### 6.  Karena banyak informasi dari Handler, buatlah subdomain yang khusus untuk operation yaitu operation.wise.yyy.com dengan alias www.operation.wise.yyy.com yang didelegasikan dari WISE ke Berlint dengan IP menuju ke Eden dalam folder operation
+
+Edit file `/etc/bind/wise/wise.yyy.com` dengan command berikut. 
+```
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     wise.BO3.com. root.wise.B03.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@               IN      NS      wise.B03.com.
+@               IN      A       192.174.2.2
+eden            IN      A       192.174.3.3
+www             IN      CNAME   wise.B03.com.
+www.eden        IN      CNAME   eden.wise.B03.com.
+ns1             IN      A       192.174.3.3 ; IP Eden
+operation       IN      NS      ns1 
+' > /etc/bind/wise/wise.B03.com
+```
+
+kemudian pada file `/etc/bind/named.conf.options`, comment `dnssec-validation auto;` tambahkan `allow-query{any;};`, seperti command berikut:
+
+```
+echo '
+options {
+    directory "/var/cache/bind";
+
+    //forwarders {
+    //    0.0.0.0;
+    //};
+
+    //dnssec-validation auto;
+    allow-query { any; };
+    auth-nxdomain no;    # conform to RFC1035
+    listen-on-v6 { any; };
+};
+' > /etc/bind/named.conf.options
+```
+
+Tambahkan juga `allow-transfer { "IP Berlint"; };` pada file `/etc/bind/named.conf.local ` (telah dilakukan di nomor 5)
+
+Setelah itu restart bind9 
+```
+service bind9 restart
+```
+
+Pada server *Berlint*, edit file `/etc/bind/named.conf.options`, comment `dnssec-validation auto;` dan tambahkan `allow-query{any;};`, seperti command berikut:
+```
+echo '
+options {
+        directory "/var/cache/bind";
+        // forwarders {
+        //  0.0.0.0;
+        // }; 
+
+        // dnssec-validation auto;
+        allow-query{any;};
+
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+};' > /etc/bind/named.conf.options
+```
+Juga edit file `/etc/bind/named.conf.local` di *Berlint* dengan menambahkan `zone "operation.wise.yyy.com"`
+
+```
+echo '
+zone "operation.wise.B03.com" {
+        type master;
+        file "/etc/bind/operation/operation.wise.B03.com";
+};
+
+zone "wise.B03.com" {
+        type slave;
+        masters { 192.174.2.2; };
+        file "var/lib/bind/wise.B03.com";
+};
+
+' > /etc/bind/named.conf.local
+```
+
+Buat direktori baru bernama **operation** dan edit file **operation.wise.yyy.com**
+
+```
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     operation.wise.BO3.com. root.operation.wise.B03.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@               IN      NS      operation.wise.B03.com.
+@               IN      A       192.174.3.3 ; IP Eden
+www             IN      A       192.174.3.3 ; IP Eden
+' > /etc/bind/operation/operation.wise.B03.com
+```
+
+Restart bind9
+
+```
+service bind9 restart
+```
+
+Untuk pengujian, lakukan ping ke domain **www.operation.wise.yyy.com** dari client *SSS*
+
+![image](https://user-images.githubusercontent.com/78299006/198870425-3fbf6d24-bc44-4588-9fca-6e7297fbb021.png)
+
+
+### 7.  Untuk informasi yang lebih spesifik mengenai Operation Strix, buatlah subdomain melalui Berlint dengan akses strix.operation.wise.yyy.com dengan alias www.strix.operation.wise.yyy.com yang mengarah ke Eden 
+
+Untuk membuat subdomain pada *Berlint*, edit file **operation.wise.yyy.com** dan tambahkan strix sebagai subdomain seperti command berikut:
+
+```
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     operation.wise.BO3.com. root.operation.wise.B03.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@               IN      NS      operation.wise.B03.com.
+@               IN      A       192.174.3.3
+www             IN      A       192.174.3.3
+strix           IN      A       192.174.3.3 ; IP Eden
+www.strix       IN      CNAME   strix.operation.wise.B03.com.
+' > /etc/bind/operation/operation.wise.B03.com
+```
+
+setelah itu, restart bind
+
+```
+service bind9 restart
+```
+
+kemudian lakukan ping ke subdomain 
+
+![image](https://user-images.githubusercontent.com/78299006/198870659-6205446d-1477-4f0e-8405-bfed9d5f4624.png)
+
+
 ### 8. Pertama dengan webserver www.wise.yyy.com. Pertama, Loid membutuhkan webserver dengan DocumentRoot pada /var/www/wise.yyy.com
 
 jalankan perintah berikut pada wise:
