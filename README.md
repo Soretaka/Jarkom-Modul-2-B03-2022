@@ -143,6 +143,96 @@ hasil ping wise.B03.com
 
 ![image](https://user-images.githubusercontent.com/70903245/198836283-b8539688-6b89-466e-9122-a2d853eab1f6.png)
 
+### 3. Setelah itu ia juga ingin membuat subdomain eden.wise.yyy.com dengan alias www.eden.wise.yyy.com yang diatur DNS-nya di WISE dan mengarah ke Eden
+
+Untuk membuat subdomain, kita harus mengedit file `/etc/bind/wise/wise.yyy.com` dengan menambahkan subdomai **eden** dan mengarah pada **192.174.3.3** (IP Eden) buat aliasnya dengan CNAME. Kita dapat melakukan hal tersebut dengan command
+```
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     wise.BO3.com. root.wise.B03.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@               IN      NS      wise.B03.com.
+@               IN      A       192.174.2.2
+eden            IN      A       192.174.3.3
+www             IN      CNAME   wise.B03.com.
+www.eden        IN      CNAME   eden.wise.B03.com.
+ns1             IN      A       192.174.3.3
+operation       IN      NS      ns1 
+' > /etc/bind/wise/wise.B03.com
+```
+
+Kemudian restart service bind
+
+```
+service bind9 restart
+```
+
+Lalu coba ping ke subdomain pada client SSS
+
+![image](https://user-images.githubusercontent.com/78299006/199212433-c3c1ae47-1d2a-4d5d-987f-620ea2e560f2.png)
+
+### 4.  Buat juga reverse domain untuk domain utama
+
+Edit file `/etc/bind/named.conf.local` di *WISE* dengan menambahkan reverse 3 byte awal dari IP *Wise*. Edit file tersebut dapat dilakukan dengan command
+
+```
+echo '
+zone "wise.B03.com" {
+        type master;
+        notify yes;
+        also-notify { 192.174.3.2; };
+        allow-transfer { 192.174.3.2; };
+        file "/etc/bind/wise/wise.B03.com";
+};
+
+zone "2.174.192.in-addr.arpa" {
+        type master;
+        file "/etc/bind/wise/2.174.192.in-addr.arpa";
+};
+' > /etc/bind/named.conf.local
+```
+
+Kemudian, edit file `/etc/bind/wise/[Reverse dari 3 Byte awal].in-addr.arpa` dengan command berikut:
+
+```
+echo '
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     wise.BO3.com. root.wise.B03.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+2.174.192.in-addr.arpa. IN      NS      wise.B03.com.
+2                       IN      PTR     wise.B03.com.
+' > /etc/bind/wise/2.174.192.in-addr.arpa
+```
+
+Restart bind9
+
+```
+service bind9 restart
+```
+
+Kemudian cek pada client *SSS* apakah konfigurasi sudah benar. Pastikan telah update dan install dnsutil pada client *SSS*
+
+![image](https://user-images.githubusercontent.com/78299006/199213974-ba4a5c05-d2ea-4529-948f-323ca6037ae3.png)
+
+
+
+
 ### 5.  Agar dapat tetap dihubungi jika server WISE bermasalah, buatlah juga Berlint sebagai DNS Slave untuk domain utama
 
 Pada *Wise*, edit `zone "wise.yyy.com"` pada `/etc/bind/named.conf.local` dengan command berikut:
